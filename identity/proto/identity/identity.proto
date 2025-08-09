@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package grpc_example.identity;
+
+import "google/api/annotations.proto";
+
+option go_package = "protogen/identity";
+
+message FindPersonRequest {
+  int64 id = 1;
+}
+
+message PersonResponse {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+
+  message PhoneNumber {
+    PhoneType type = 1;
+    string number = 2;
+  }
+
+  repeated PhoneNumber phones = 4;
+}
+
+enum PhoneType {
+  PHONE_TYPE_UNSPECIFIED = 0;
+  PHONE_TYPE_MOBILE = 1;
+  PHONE_TYPE_HOME = 2;
+  PHONE_TYPE_WORK = 3;
+}
+
+service IdentityService {
+  rpc Find(FindPersonRequest) returns(PersonResponse) {
+    option (google.api.http) = {
+      get: "/person/{id}"
+    };
+  }
+}
